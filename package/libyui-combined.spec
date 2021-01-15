@@ -33,14 +33,7 @@ BuildRequires:  pkg-config
 BuildRequires:  boost-devel
 BuildRequires:  libboost_test-devel
 # for %{ncurses_bin_name}
-BuildRequires:  cmake >= 3.10
-BuildRequires:  gcc-c++
-BuildRequires:  boost-devel
 BuildRequires:  ncurses-devel
-
-# YLabel::setAutoWrap()
-%define         libyui_devel_version libyui-devel >= 3.10.0
-BuildRequires:  %{libyui_devel_version}
 
 Url:            http://github.com/libyui/
 Summary:        GUI-abstraction library
@@ -124,7 +117,7 @@ Requires:       glibc-devel
 Requires:       libstdc++-devel
 Requires:       boost-devel
 Requires:       ncurses-devel
-Requires:       %{libyui_devel_version}
+Requires:       libyui-devel = %{version}
 Requires:       %{ncurses_bin_name} = %{version}
 
 Url:            http://github.com/libyui/
@@ -149,7 +142,7 @@ Conflicts:      %{ncurses_name}8
 
 Requires:       screen
 
-%description -n %{ncurses_name}-``tools
+%description -n %{ncurses_name}-tools
 Character based (ncurses) user interface component for libYUI.
 
 libyui-terminal - useful for testing on headless machines
@@ -182,17 +175,8 @@ make %{?jobs:-j%jobs}
 popd
 
 pushd libyui-ncurses
-export CFLAGS="$RPM_OPT_FLAGS -DNDEBUG"
-export CXXFLAGS="$RPM_OPT_FLAGS -DNDEBUG"
-
 mkdir build
 cd build
-
-%if %{?_with_debug:1}%{!?_with_debug:0}
-CMAKE_OPTS="-DCMAKE_BUILD_TYPE=RELWITHDEBINFO"
-%else
-CMAKE_OPTS="-DCMAKE_BUILD_TYPE=RELEASE"
-%endif
 
 cmake .. \
  -DDOC_DIR=%{_docdir} \
@@ -229,16 +213,16 @@ popd
 %files -n %{bin_name}
 %defattr(-,root,root)
 %dir %{_libdir}/yui
-%{_libdir}/lib*.so.*
+%{_libdir}/libyui.so.*
 %doc %dir %{_docdir}/%{bin_name}
 %license %{_docdir}/%{bin_name}/COPYING*
 
 
-%files devel
+%files -n libyui-devel
 %defattr(-,root,root)
 %dir %{_docdir}/%{bin_name}
-%{_libdir}/lib*.so
-%{_includedir}/yui
+%{_libdir}/libyui.so
+%{_includedir}/yui/*.*
 %dir %{_datadir}/libyui
 %{_datadir}/libyui/buildtools
 %doc %{_docdir}/%{bin_name}/examples
@@ -248,15 +232,15 @@ popd
 %files -n %{ncurses_bin_name}
 %defattr(-,root,root)
 %dir %{_libdir}/yui
-%{_libdir}/yui/lib*.so.*
+%{_libdir}/yui/%{ncurses_name}.so.*
 %doc %dir %{_docdir}/%{ncurses_bin_name}
 %license %{_docdir}/%{ncurses_bin_name}/COPYING*
 
 %files -n %{ncurses_name}-devel
 %defattr(-,root,root)
 %dir %{_docdir}/%{ncurses_bin_name}
-%{_libdir}/yui/lib*.so
-%{_prefix}/include/yui
+%{_libdir}/yui/%{ncurses_name}.so
+%{_prefix}/include/yui/ncurses
 
 
 %files -n %{ncurses_name}-tools
