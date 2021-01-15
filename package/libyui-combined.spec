@@ -19,7 +19,7 @@
 Name:           libyui-combined
 
 # DO NOT manually bump the version here; instead, use   rake version:bump
-Version:        0.0.1
+Version:        0.0.2
 Release:        0
 
 %define         so_version 14
@@ -153,6 +153,10 @@ libyui-terminal - useful for testing on headless machines
 
 %build
 
+# nothing here, build and install are interlaced
+
+%install
+
 pushd libyui
 mkdir build
 cd build
@@ -172,6 +176,11 @@ cmake .. \
  $CMAKE_OPTS
 
 make %{?jobs:-j%jobs}
+
+make install DESTDIR="$RPM_BUILD_ROOT"
+install -m0755 -d $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
+install -m0755 -d $RPM_BUILD_ROOT/%{_libdir}/yui
+install -m0644 ../COPYING* $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
 popd
 
 pushd libyui-ncurses
@@ -184,20 +193,7 @@ cmake .. \
  $CMAKE_OPTS
 
 make %{?jobs:-j%jobs}
-popd
 
-%install
-
-pushd libyui
-cd build
-make install DESTDIR="$RPM_BUILD_ROOT"
-install -m0755 -d $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
-install -m0755 -d $RPM_BUILD_ROOT/%{_libdir}/yui
-install -m0644 ../COPYING* $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
-popd
-
-pushd libyui-ncurses
-cd build
 make install DESTDIR="$RPM_BUILD_ROOT"
 install -m0755 -d $RPM_BUILD_ROOT/%{_docdir}/%{ncurses_bin_name}/
 install -m0755 -d $RPM_BUILD_ROOT/%{_libdir}/yui
