@@ -70,7 +70,7 @@ YaST for generic (C++) applications. This package has very few
 dependencies.
 
 
-%package devel
+%package -n libyui-devel
 
 Requires:       glibc-devel
 Requires:       libstdc++-devel
@@ -81,7 +81,7 @@ Url:            http://github.com/libyui/
 Summary:        Libyui header files and examples
 Group:          Development/Languages/C and C++
 
-%description devel
+%description -n libyui-devel
 This is the user interface engine that provides the abstraction from
 graphical user interfaces (Qt, Gtk) and text based user interfaces
 (ncurses).
