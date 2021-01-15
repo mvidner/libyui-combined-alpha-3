@@ -16,14 +16,14 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-Name:           libyui
+Name:           libyui-combined
 
 # DO NOT manually bump the version here; instead, use   rake version:bump
-Version:        3.12.2
+Version:        0.0.1
 Release:        0
 
 %define         so_version 14
-%define         bin_name %{name}%{so_version}
+%define         bin_name libyui%{so_version}
 
 BuildRequires:  cmake >= 3.10
 BuildRequires:  gcc-c++
@@ -34,7 +34,7 @@ BuildRequires:  libboost_test-devel
 Url:            http://github.com/libyui/
 Summary:        GUI-abstraction library
 License:        LGPL-2.1 or LGPL-3.0
-Source:         %{name}-%{version}.tar.bz2
+Source:         %{name}-%{version}.tar.gz
 
 %description
 This is the user interface engine that provides the abstraction from
@@ -95,6 +95,7 @@ This package provides the C++ header files and some C++ examples.
 
 %build
 
+cd libyui
 mkdir build
 cd build
 
@@ -116,6 +117,8 @@ make %{?jobs:-j%jobs}
 
 
 %install
+
+cd libyui
 cd build
 make install DESTDIR="$RPM_BUILD_ROOT"
 install -m0755 -d $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
@@ -143,7 +146,7 @@ install -m0644 ../COPYING* $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
 %dir %{_datadir}/libyui
 %{_datadir}/libyui/buildtools
 %doc %{_docdir}/%{bin_name}/examples
-%{_libdir}/pkgconfig/%{name}.pc
+%{_libdir}/pkgconfig/libyui.pc
 # %{_libdir}/cmake/%{name}
 
 %changelog
