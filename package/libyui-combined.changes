@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jan 19 14:33:46 UTC 2021 - Martin Vidner <mvidner@suse.com>
+
+- Find yui in a sibling directory when building from a single tarball
+- 0.0.3
+
+-------------------------------------------------------------------
 Fri Jan 15 09:18:18 UTC 2021 - Martin Vidner <mvidner@suse.com>
 
 - Initial
