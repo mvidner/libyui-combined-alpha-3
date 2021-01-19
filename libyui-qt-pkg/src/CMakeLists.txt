@@ -161,6 +161,12 @@ add_library( ${TARGETLIB} SHARED
 target_include_directories( ${TARGETLIB} BEFORE PUBLIC ../../libyui/include )
 target_include_directories( ${TARGETLIB} BEFORE PUBLIC ../../libyui-qt/include )
 
+# FIXME workaround for Travis build failures with an older libyui-qt-devel
+# that still includes <QY2ListView.h> (not "QY2ListView.h").
+# Remove this after the migration to the new CMake build system is done!
+target_include_directories( ${TARGETLIB} PUBLIC /usr/include/yui/qt )
+# FIXME end
+
 # Make the version from ../VERSION.cmake available as a #define
 target_compile_definitions( ${TARGETLIB} PUBLIC VERSION="${VERSION}" )
 
@@ -168,8 +174,9 @@ target_compile_definitions( ${TARGETLIB} PUBLIC VERSION="${VERSION}" )
 # deep in the libzypp headers
 target_compile_definitions( ${TARGETLIB} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS=1 )
 
-# libyui-qt.so* is in /usr/lib64/yui, not in /usr/lib64
-target_link_directories( ${TARGETLIB} BEFORE PUBLIC /usr/${CMAKE_INSTALL_LIBDIR}/yui )
+# Find yui in a sibling directory when building from a single tarball
+target_link_directories( ${TARGETLIB} BEFORE PUBLIC ../../libyui/build/src )
+target_link_directories( ${TARGETLIB} BEFORE PUBLIC ../../libyui-qt/build/src )
 
 # Libraries that are needed to build this shared lib
 target_link_libraries( ${TARGETLIB}
