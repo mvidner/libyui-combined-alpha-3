@@ -25,7 +25,8 @@ Release:        0
 
 %define         so_version 14
 %define         libyui_devel_version libyui-devel >= 3.10.0
-%define         bin_name %{name}%{so_version}
+%define         qt_name libyui-qt
+%define         qt_bin_name %{qt_name}%{so_version}
 
 BuildRequires:  cmake >= 3.10
 BuildRequires:  gcc-c++
@@ -45,16 +46,16 @@ Provides:       yui_backend = %{so_version}
 Summary:        Libyui - Qt User Interface
 License:        LGPL-2.1 or LGPL-3.0
 Url:            http://github.com/libyui/
-Source:         %{name}-%{version}.tar.bz2
+Source:         ${qt_name}-%{version}.tar.bz2
 
 %description
 This package contains the Qt user interface component for libYUI.
 
 
-%package -n %{bin_name}
+%package -n %{qt_bin_name}
 
 Requires:       libyui%{so_version}
-Provides:       %{name} = %{version}
+Provides:       ${qt_name} = %{version}
 Provides:       yast2-qt = %{version}
 Obsoletes:      yast2-qt < 2.51.0
 
@@ -62,21 +63,21 @@ Url:            http://github.com/libyui/
 Summary:        Libyui - Qt User Interface
 Group:          System/Libraries
 
-%description -n %{bin_name}
+%description -n %{qt_bin_name}
 This package contains the Qt user interface component for libYUI.
 
 
-%package devel
+%package -n %{qt_name}-devel
 
 Requires:       %{libyui_devel_version}
-Requires:       %{bin_name} = %{version}
+Requires:       %{qt_bin_name} = %{version}
 Requires:       fontconfig-devel
 
 Url:            http://github.com/libyui/
 Summary:        Libyui-qt header files
 Group:          Development/Languages/C and C++
 
-%description devel
+%description -n %{qt_name}-devel
 This package contains the Qt user interface component for libYUI.
 
 This can be used independently of YaST for generic (C++) applications.
@@ -84,7 +85,7 @@ This package has very few dependencies.
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n ${qt_name}-%{version}
 
 %build
 
@@ -112,23 +113,23 @@ make %{?jobs:-j%jobs}
 cd build
 make install DESTDIR="$RPM_BUILD_ROOT"
 install -m0755 -d $RPM_BUILD_ROOT/%{_libdir}/yui
-install -m0755 -d $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
-install -m0644 ../COPYING* $RPM_BUILD_ROOT/%{_docdir}/%{bin_name}/
+install -m0755 -d $RPM_BUILD_ROOT/%{_docdir}/%{qt_bin_name}/
+install -m0644 ../COPYING* $RPM_BUILD_ROOT/%{_docdir}/%{qt_bin_name}/
 
 
-%post -n %{bin_name} -p /sbin/ldconfig
-%postun -n %{bin_name} -p /sbin/ldconfig
+%post -n %{qt_bin_name} -p /sbin/ldconfig
+%postun -n %{qt_bin_name} -p /sbin/ldconfig
 
 
-%files -n %{bin_name}
+%files -n %{qt_bin_name}
 %defattr(-,root,root)
 %dir %{_libdir}/yui
 %{_libdir}/yui/lib*.so.*
-%doc %dir %{_docdir}/%{bin_name}
-%license %{_docdir}/%{bin_name}/COPYING*
+%doc %dir %{_docdir}/%{qt_bin_name}
+%license %{_docdir}/%{qt_bin_name}/COPYING*
 
 
-%files devel
+%files -n %{qt_name}-devel
 %defattr(-,root,root)
 %{_libdir}/yui/lib*.so
 %{_includedir}/yui/qt
