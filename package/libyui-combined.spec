@@ -34,14 +34,10 @@ BuildRequires:  gcc-c++
 BuildRequires:  pkg-config
 BuildRequires:  boost-devel
 BuildRequires:  libboost_test-devel
-# for %{ncurses_bin_name}
+# for % {ncurses_bin_name}
 BuildRequires:  ncurses-devel
-# for %{qt_bin_name}
-BuildRequires:  cmake >= 3.10
-BuildRequires:  gcc-c++
-BuildRequires:  pkg-config
+# for % {qt_bin_name}
 BuildRequires:  fontconfig-devel
-
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Widgets)
@@ -113,8 +109,6 @@ This package provides the C++ header files and some C++ examples.
 Requires:       glibc-locale
 Requires:       libyui%{so_version}
 Provides:       %{ncurses_name} = %{version}
-Provides:       yast2-ncurses = 2.42.0
-Obsoletes:      yast2-ncurses < 2.42.0
 Provides:       yui_backend = %{so_version}
 
 Url:            http://github.com/libyui/
@@ -165,9 +159,8 @@ libyui-terminal - useful for testing on headless machines
 %package -n %{qt_bin_name}
 
 Requires:       libyui%{so_version}
-Provides:       ${qt_name} = %{version}
-Provides:       yast2-qt = %{version}
-Obsoletes:      yast2-qt < 2.51.0
+Provides:       %{qt_name} = %{version}
+Provides:       yui_backend = %{so_version}
 
 Url:            http://github.com/libyui/
 Summary:        Libyui - Qt User Interface
@@ -179,7 +172,7 @@ This package contains the Qt user interface component for libYUI.
 
 %package -n %{qt_name}-devel
 
-Requires:       %{libyui_devel_version}
+Requires:       libyui-devel = %{version}
 Requires:       %{qt_bin_name} = %{version}
 Requires:       fontconfig-devel
 
@@ -204,12 +197,12 @@ This package has very few dependencies.
 
 %install
 
+export CFLAGS="$RPM_OPT_FLAGS -DNDEBUG $(getconf LFS_CFLAGS)"
+export CXXFLAGS="$RPM_OPT_FLAGS -DNDEBUG $(getconf LFS_CFLAGS)"
+
 pushd libyui
 mkdir build
 cd build
-
-export CFLAGS="$RPM_OPT_FLAGS -DNDEBUG $(getconf LFS_CFLAGS)"
-export CXXFLAGS="$RPM_OPT_FLAGS -DNDEBUG $(getconf LFS_CFLAGS)"
 
 %if %{?_with_debug:1}%{!?_with_debug:0}
 CMAKE_OPTS="-DCMAKE_BUILD_TYPE=RELWITHDEBINFO"
@@ -248,9 +241,6 @@ install -m0644 ../COPYING* $RPM_BUILD_ROOT/%{_docdir}/%{ncurses_bin_name}/
 popd
 
 pushd libyui-qt
-export CFLAGS="$RPM_OPT_FLAGS -DNDEBUG"
-export CXXFLAGS="$RPM_OPT_FLAGS -DNDEBUG"
-
 mkdir build
 cd build
 
@@ -294,12 +284,13 @@ popd
 %defattr(-,root,root)
 %dir %{_docdir}/%{bin_name}
 %{_libdir}/libyui.so
+%dir %{_includedir}/yui
 %{_includedir}/yui/*.*
 %dir %{_datadir}/libyui
 %{_datadir}/libyui/buildtools
 %doc %{_docdir}/%{bin_name}/examples
 %{_libdir}/pkgconfig/libyui.pc
-# %{_libdir}/cmake/%{name}
+# %% {_libdir}/cmake/%{name}
 
 %files -n %{ncurses_bin_name}
 %defattr(-,root,root)
@@ -322,14 +313,14 @@ popd
 %files -n %{qt_bin_name}
 %defattr(-,root,root)
 %dir %{_libdir}/yui
-%{_libdir}/yui/lib*.so.*
+%{_libdir}/yui/%{qt_name}.so.*
 %doc %dir %{_docdir}/%{qt_bin_name}
 %license %{_docdir}/%{qt_bin_name}/COPYING*
 
 
 %files -n %{qt_name}-devel
 %defattr(-,root,root)
-%{_libdir}/yui/lib*.so
+%{_libdir}/yui/%{qt_name}.so
 %{_includedir}/yui/qt
 
 %changelog
